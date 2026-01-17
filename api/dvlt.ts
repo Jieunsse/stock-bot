@@ -4,6 +4,10 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getUsMarketPhase, isUsMarketHoliday } from '../src/stock/utils/usMarket';
 import { isUsWeekend } from '../src/stock/utils/usTime';
 import { buildMarketMessage } from '../src/stock/utils/marketMessage';
+
+import { fetchCompanyNews } from '../src/stock/utils/marketNews';
+import { summarizeNewsToKorean } from '../src/stock/utils/newsSummarizer';
+
 import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
 
 const FINNHUB_QUOTE_API = 'https://finnhub.io/api/v1/quote';
@@ -58,8 +62,8 @@ export default async function handler(
       throw new Error('유효하지 않은 주가 데이터');
     }
 
-    // 4️⃣ 단계별 디스코드 메시지 생성
-    const message = buildMarketMessage(phase, SYMBOL, {
+    // 4️⃣ 가격 알림 메시지 생성
+    let message = buildMarketMessage(phase, SYMBOL, {
       c,
       o,
       h,
@@ -69,7 +73,28 @@ export default async function handler(
       dp,
     });
 
-    // 5️⃣ 디스코드 전송
+    // 5️⃣ CLOSE일 때만 뉴스 요약 추가
+    if (phase === 'CLOSE') {
+      try {
+        const news = await fetchCompanyNews(SYMBOL, apiKey);
+
+        if (news.length > 0) {
+          const summary = await summarizeNewsToKorean(SYMBOL, news);
+
+          if (summary) {
+            message += `
+
+📰 오늘의 주요 뉴스
+${summary}`;
+          }
+        }
+      } catch (newsError) {
+        // 뉴스 요약 실패는 전체 알림 실패로 이어지지 않도록 함
+        console.error('NEWS SUMMARY ERROR:', newsError);
+      }
+    }
+
+    // 6️⃣ 디스코드 전송
     await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
