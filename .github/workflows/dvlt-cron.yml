@@ -1,0 +1,18 @@
+name: DVLT hourly notifier
+
+on:
+  schedule:
+    # 매 정각마다 실행 (UTC 기준)
+    - cron: '0 * * * *'
+
+  # 필요하면 수동 실행도 가능
+  workflow_dispatch:
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call DVLT API
+        run: |
+          curl -X GET https://<YOUR_VERCEL_DOMAIN>/api/dvlt
