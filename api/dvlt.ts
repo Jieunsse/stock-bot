@@ -4,11 +4,42 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 const FINNHUB_QUOTE_API = "https://finnhub.io/api/v1/quote";
 const SYMBOL = "DVLT";
 
+function isUsMarketOpen(): boolean {
+  const now = new Date();
+
+  // 미국 동부시간(ET)으로 변환
+  const etTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "America/New_York" })
+  );
+
+  const hours = etTime.getHours();
+  const minutes = etTime.getMinutes();
+
+  // 09:30 이전 → 장 닫힘
+  if (hours < 9 || (hours === 9 && minutes < 30)) {
+    return false;
+  }
+
+  // 16:00 이후 → 장 닫힘
+  if (hours > 16 || (hours === 16 && minutes >= 0)) {
+    return false;
+  }
+
+  return true;
+}
+
+
 export default async function handler(
   _req: VercelRequest,
   res: VercelResponse
 ) {
   try {
+
+    if(!isUsMarketOpen()) {
+      console.log("미장 폐장 시간 -> 알림 스킵");
+      return res.status(200).json({ skipped: "market closed"});
+    }
+
     const apiKey = process.env.FINNHUB_API_KEY;
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
