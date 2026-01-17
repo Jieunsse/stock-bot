@@ -3,6 +3,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 import { getUsMarketPhase, isUsMarketHoliday } from '../src/stock/utils/usMarket';
 import { isUsWeekend } from '../src/stock/utils/usTime';
+import { buildMarketMessage } from '../src/stock/utils/marketMessage';
+import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
 
 const FINNHUB_QUOTE_API = 'https://finnhub.io/api/v1/quote';
 const SYMBOL = 'DVLT';
@@ -39,43 +41,46 @@ export default async function handler(
       throw new Error('환경 변수 누락');
     }
 
-    // 3️⃣ 주가 조회
+    // 3️⃣ Finnhub 주가 조회
     const quoteRes = await fetch(
       `${FINNHUB_QUOTE_API}?symbol=${SYMBOL}&token=${apiKey}`,
     );
 
-    const { c: current, pc: prevClose, error } = await quoteRes.json();
+    const quote = (await quoteRes.json()) as FinnhubQuote;
 
-    if (error) throw new Error(`Finnhub error: ${error}`);
-    if (current == null || prevClose == null) {
+    if (quote.error) {
+      throw new Error(`Finnhub error: ${quote.error}`);
+    }
+
+    const { c, o, h, l, pc, d, dp } = quote;
+
+    if ([c, o, h, l, pc, d, dp].some((v) => v == null)) {
       throw new Error('유효하지 않은 주가 데이터');
     }
 
-    // 4️⃣ 계산
-    const diff = current - prevClose;
-    const diffRate = ((diff / prevClose) * 100).toFixed(2);
-    const emoji = diff >= 0 ? '📈' : '📉';
+    // 4️⃣ 단계별 디스코드 메시지 생성
+    const message = buildMarketMessage(phase, SYMBOL, {
+      c,
+      o,
+      h,
+      l,
+      pc,
+      d,
+      dp,
+    });
 
-    // 5️⃣ 제목
-    const title =
-      phase === 'OPEN'
-        ? '📢 DVLT 개장가 알림'
-        : phase === 'CLOSE'
-        ? '🔔 DVLT 마감가 알림'
-        : 'DVLT 주가 알림';
-
-    // 6️⃣ 디스코드 전송
+    // 5️⃣ 디스코드 전송
     await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        content: `${emoji} **${title}**
-현재가: $${current}
-전일 대비: ${diff >= 0 ? '+' : ''}${diff.toFixed(4)} (${diffRate}%)`,
-      }),
+      body: JSON.stringify({ content: message }),
     });
 
-    return res.status(200).json({ success: true, phase });
+    return res.status(200).json({
+      success: true,
+      phase,
+      price: c,
+    });
   } catch (error: any) {
     console.error('DVLT ERROR:', error.message);
     return res.status(500).json({ error: error.message });
