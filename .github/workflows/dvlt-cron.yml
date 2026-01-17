@@ -15,4 +15,4 @@ jobs:
     steps:
       - name: Call DVLT API
         run: |
-          curl -X GET https://https://stock-bot-lilac.vercel.app//api/dvlt
+          curl -X GET https://https://stock-bot-lilac.vercel.app/api/dvlt
