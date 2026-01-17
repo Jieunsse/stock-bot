@@ -1,5 +1,6 @@
 // api/dvlt.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
 
 import { getUsMarketPhase, isUsMarketHoliday } from '../src/stock/utils/usMarket';
 import { isUsWeekend } from '../src/stock/utils/usTime';
@@ -7,8 +8,7 @@ import { buildMarketMessage } from '../src/stock/utils/marketMessage';
 
 import { fetchCompanyNews } from '../src/stock/utils/marketNews';
 import { summarizeNewsToKorean } from '../src/stock/utils/newsSummarizer';
-
-import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
+import { buildDailySummary } from '../src/stock/utils/dailySummary';
 
 const FINNHUB_QUOTE_API = 'https://finnhub.io/api/v1/quote';
 const SYMBOL = 'DVLT';
@@ -73,8 +73,20 @@ export default async function handler(
       dp,
     });
 
-    // 5️⃣ CLOSE일 때만 뉴스 요약 추가
+    // 5️⃣ CLOSE일 때만 📊 오늘 요약 + 📰 뉴스 요약 추가
     if (phase === 'CLOSE') {
+      // 📊 오늘 요약
+      const dailySummary = buildDailySummary({
+        high: h,
+        low: l,
+        close: c,
+      });
+
+      message += `
+
+${dailySummary}`;
+
+      // 📰 뉴스 요약
       try {
         const news = await fetchCompanyNews(SYMBOL, apiKey);
 
