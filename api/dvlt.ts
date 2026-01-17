@@ -27,11 +27,29 @@ function getUsMarketPhase(): "OPEN" | "INTRADAY" | "CLOSE" | "NONE" {
   return "NONE";
 }
 
+function isUsMarketWeekend(date = new Date()): boolean {
+  // 미국 동부시간 기준 날짜 생성
+  const usDate = new Date(
+    date.toLocaleString('en-US', { timeZone: 'America/New_York' })
+  );
+
+  const day = usDate.getDay(); // 0 = Sunday, 6 = Saturday
+  return day === 0 || day === 6;
+}
+
+
 export default async function handler(
   _req: VercelRequest,
   res: VercelResponse
 ) {
   try {
+
+    if (isUsMarketWeekend()) {
+      console.log("미국 주말 -> 알림 스킵");
+      return res.status(200).json({ skipped: "us market weekend"});
+    }
+
+
     // 1️⃣ 지금 알림을 보내야 하는 시각인지 판단
     const phase = getUsMarketPhase();
 
