@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/dvlt",
-      "schedule": "0 * * * *"
-    }
-  ]
-}
