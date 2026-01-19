@@ -1,4 +1,4 @@
-import type { FinnhubNews } from '../interfaces/FinnhubNews';
+import type { FinnhubNews } from '../interfaces/FinnhubNews.js';
 
 const FINNHUB_NEWS_API = 'https://finnhub.io/api/v1/company-news';
 

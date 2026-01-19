@@ -1,4 +1,4 @@
-import type { UsMarketPhase } from './usMarket';
+import type { UsMarketPhase } from './usMarket.js';
 
 type Quote = {
   c: number;
