@@ -1,11 +1,11 @@
 // api/dvlt.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-
+import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
 
 import { getUsMarketPhase, isUsMarketHoliday } from '../src/stock/utils/usMarket';
 import { isUsWeekend } from '../src/stock/utils/usTime';
 import { buildMarketMessage } from '../src/stock/utils/marketMessage';
-import { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
+
 
 import { fetchCompanyNews } from '../src/stock/utils/marketNews';
 import { summarizeNewsToKorean } from '../src/stock/utils/newsSummarizer';
