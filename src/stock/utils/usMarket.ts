@@ -1,5 +1,5 @@
-import { US_MARKET_HOLIDAYS_2026 } from '../constants/usMarketHolidays';
-import { US_MARKET_TIME } from '../constants/usMarketTime';
+import { US_MARKET_HOLIDAYS_2026 } from '../constants/usMarketHolidays.js';
+import { US_MARKET_TIME } from '../constants/usMarketTime.js';
 import { getUsDate, getUsDateString } from './usTime';
 
 export type UsMarketPhase = 'OPEN' | 'INTRADAY' | 'CLOSE' | 'NONE';
