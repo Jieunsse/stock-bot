@@ -15,7 +15,6 @@ export function buildMarketMessage(
   symbol: string,
   quote: Quote,
 ): string {
-  const emoji = quote.d >= 0 ? '📈' : '📉';
 
   switch (phase) {
     case 'OPEN':
