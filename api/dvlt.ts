@@ -1,15 +1,14 @@
 // api/dvlt.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote';
+import type { FinnhubQuote } from '../src/stock/interfaces/FinnhubQuote.js';
+import { getUsMarketPhase, isUsMarketHoliday } from '../src/stock/utils/usMarket.js';
+import { isUsWeekend } from '../src/stock/utils/usTime.js';
+import { buildMarketMessage } from '../src/stock/utils/marketMessage.js';
 
-import { getUsMarketPhase, isUsMarketHoliday } from '../src/stock/utils/usMarket';
-import { isUsWeekend } from '../src/stock/utils/usTime';
-import { buildMarketMessage } from '../src/stock/utils/marketMessage';
 
-
-import { fetchCompanyNews } from '../src/stock/utils/marketNews';
-import { summarizeNewsToKorean } from '../src/stock/utils/newsSummarizer';
-import { buildDailySummary } from '../src/stock/utils/dailySummary';
+import { fetchCompanyNews } from '../src/stock/utils/marketNews.js';
+import { summarizeNewsToKorean } from '../src/stock/utils/newsSummarizer.js';
+import { buildDailySummary } from '../src/stock/utils/dailySummary.js';
 
 const FINNHUB_QUOTE_API = 'https://finnhub.io/api/v1/quote';
 const SYMBOL = 'DVLT';
