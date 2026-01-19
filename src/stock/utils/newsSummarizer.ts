@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import type { FinnhubNews } from '../../src/stock/interfaces/FinnhubNews';
+import type { FinnhubNews } from '../interfaces/FinnhubNews';
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
