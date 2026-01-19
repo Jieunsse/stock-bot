@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/node": "^25.0.9",
     "@vercel/node": "^5.5.22",
     "typescript": "~5.9.3",
     "vercel": "^50.4.4",
     "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "openai": "^6.16.0"
   }
 }

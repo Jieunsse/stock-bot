@@ -7,7 +7,14 @@ settings:
 importers:
 
   .:
+    dependencies:
+      openai:
+        specifier: ^6.16.0
+        version: 6.16.0
     devDependencies:
+      '@types/node':
+        specifier: ^25.0.9
+        version: 25.0.9
       '@vercel/node':
         specifier: ^5.5.22
         version: 5.5.22(rollup@4.55.1)
@@ -19,7 +26,7 @@ importers:
         version: 50.4.4(rollup@4.55.1)(typescript@5.9.3)
       vite:
         specifier: ^7.2.4
-        version: 7.3.1(@types/node@16.18.11)(tsx@4.21.0)
+        version: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
 
 packages:
 
@@ -668,6 +675,9 @@ packages:
   '@types/node@16.18.11':
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
 
+  '@types/node@25.0.9':
+    resolution: {integrity: sha512-/rpCXHlCWeqClNBwUhDcusJxXYDjZTyE8v5oTO7WbL8eij2nKhUeU89/6xgjU7N4/Vh3He0BtyhJdQbDyhiXAw==}
+
   '@vercel/backends@0.0.22':
     resolution: {integrity: sha512-O+HmKvFkvWbTG7ESN8vOfzBMzjfKdg8qP7/qqqsCK0IqtuihlVOkLRM9Smb5pAgk/QrlTfsBM6fjhneBNcHXtQ==}
 
@@ -1278,6 +1288,18 @@ packages:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
 
+  openai@6.16.0:
+    resolution: {integrity: sha512-fZ1uBqjFUjXzbGc35fFtYKEOxd20kd9fDpFeqWtsOZWiubY8CZ1NAlXHW3iathaFvqmNtCWMIsosCuyeI7Joxg==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.25 || ^4.0
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
+
   os-paths@4.4.0:
     resolution: {integrity: sha512-wrAwOeXp1RRMFfQY8Sy7VaGVmPocaLwSFOYCGKSyo8qmJ+/yaafCl5BCA1IQZWqFSRBrKDYFeR9d/VyQzfH/jg==}
     engines: {node: '>= 6.0'}
@@ -1531,6 +1553,9 @@ packages:
 
   uid-promise@1.0.0:
     resolution: {integrity: sha512-R8375j0qwXyIu/7R0tjdF06/sElHqbmdmWC9M2qQHpEVbvE4I5+38KJI7LUUmQMp7NVq4tKHiBMkT0NFM453Ig==}
+
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
   undici@5.28.4:
     resolution: {integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==}
@@ -2047,6 +2072,10 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/node@16.18.11': {}
+
+  '@types/node@25.0.9':
+    dependencies:
+      undici-types: 7.16.0
 
   '@vercel/backends@0.0.22(rollup@4.55.1)(typescript@5.9.3)':
     dependencies:
@@ -2833,6 +2862,8 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
+  openai@6.16.0: {}
+
   os-paths@4.4.0: {}
 
   p-finally@2.0.1: {}
@@ -3085,6 +3116,8 @@ snapshots:
 
   uid-promise@1.0.0: {}
 
+  undici-types@7.16.0: {}
+
   undici@5.28.4:
     dependencies:
       '@fastify/busboy': 2.1.1
@@ -3135,7 +3168,7 @@ snapshots:
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@16.18.11)(tsx@4.21.0):
+  vite@7.3.1(@types/node@25.0.9)(tsx@4.21.0):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -3144,7 +3177,7 @@ snapshots:
       rollup: 4.55.1
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 16.18.11
+      '@types/node': 25.0.9
       fsevents: 2.3.3
       tsx: 4.21.0
 
