@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "api/_utils/dailySummary.ts", "api/_utils/marketMessage.ts", "api/_utils/marketNews.ts", "api/_utils/newsSummarizer.ts", "api/_utils/usMarket.ts", "api/_utils/usTime.ts"]
 }
