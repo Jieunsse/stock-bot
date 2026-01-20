@@ -1,6 +1,6 @@
 import { US_MARKET_HOLIDAYS_2026 } from '../constants/usMarketHolidays.js';
 import { US_MARKET_TIME } from '../constants/usMarketTime.js';
-import { getUsDate, getUsDateString } from './usTime.js';
+import { getUsDateString, getUsTime } from './usTime.js';
 
 export type UsMarketPhase = 'OPEN' | 'INTRADAY' | 'CLOSE' | 'NONE';
 
@@ -15,23 +15,27 @@ export function isUsMarketHoliday(): boolean {
  * 미국 장 알림 단계 판별
  */
 export function getUsMarketPhase(): UsMarketPhase {
-  const usDate = getUsDate();
-  const hours = usDate.getHours();
-  const minutes = usDate.getMinutes();
+  const { hour, minute } = getUsTime();
 
   const { OPEN, INTRADAY_START_HOUR, INTRADAY_END_HOUR, CLOSE } = US_MARKET_TIME;
 
-  if (hours === OPEN.hour && minutes === OPEN.minute) return 'OPEN';
+  // GitHub Actions 호출 지연을 고려해 ±2분 허용
+  const isWithinMinute = (
+    targetHour: number,
+    targetMinute: number,
+    toleranceMinutes = 2,
+  ) => {
+    if (hour !== targetHour) return false;
+    return Math.abs(minute - targetMinute) <= toleranceMinutes;
+  };
 
-  if (
-    hours >= INTRADAY_START_HOUR &&
-    hours <= INTRADAY_END_HOUR &&
-    minutes === 0
-  ) {
+  if (isWithinMinute(OPEN.hour, OPEN.minute)) return 'OPEN';
+
+  if (hour >= INTRADAY_START_HOUR && hour <= INTRADAY_END_HOUR && minute <= 2) {
     return 'INTRADAY';
   }
 
-  if (hours === CLOSE.hour && minutes === CLOSE.minute) return 'CLOSE';
+  if (isWithinMinute(CLOSE.hour, CLOSE.minute)) return 'CLOSE';
 
   return 'NONE';
 }
