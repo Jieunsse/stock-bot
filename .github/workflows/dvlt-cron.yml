@@ -2,8 +2,8 @@ name: DVLT hourly notifier
 
 on:
   schedule:
-    # 매 정각마다 실행 (UTC 기준)
-    - cron: '0 * * * *'
+    # 매 정각 + 30분마다 실행 (UTC 기준) → 미국장 개장 09:30 ET 대응
+    - cron: '0,30 * * * *'
 
   # 필요하면 수동 실행도 가능
   workflow_dispatch:
