@@ -17,25 +17,18 @@ export function isUsMarketHoliday(): boolean {
 export function getUsMarketPhase(): UsMarketPhase {
   const { hour, minute } = getUsTime();
 
-  const { OPEN, INTRADAY_START_HOUR, INTRADAY_END_HOUR, CLOSE } = US_MARKET_TIME;
+  const { OPEN, CLOSE } = US_MARKET_TIME;
 
-  // GitHub Actions 호출 지연을 고려해 ±2분 허용
-  const isWithinMinute = (
-    targetHour: number,
-    targetMinute: number,
-    toleranceMinutes = 2,
-  ) => {
-    if (hour !== targetHour) return false;
-    return Math.abs(minute - targetMinute) <= toleranceMinutes;
-  };
+  const toMinutes = (h: number, m: number) => h * 60 + m;
 
-  if (isWithinMinute(OPEN.hour, OPEN.minute)) return 'OPEN';
+  const nowMinutes = toMinutes(hour, minute);
+  const openMinutes = toMinutes(OPEN.hour, OPEN.minute);
+  const closeMinutes = toMinutes(CLOSE.hour, CLOSE.minute);
 
-  if (hour >= INTRADAY_START_HOUR && hour <= INTRADAY_END_HOUR && minute <= 2) {
-    return 'INTRADAY';
-  }
-
-  if (isWithinMinute(CLOSE.hour, CLOSE.minute)) return 'CLOSE';
+  if (nowMinutes < openMinutes) return 'NONE';
+  if (nowMinutes === openMinutes) return 'OPEN';
+  if (nowMinutes < closeMinutes) return 'INTRADAY';
+  if (nowMinutes === closeMinutes) return 'CLOSE';
 
   return 'NONE';
 }
